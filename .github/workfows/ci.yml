@@ -1,0 +1,47 @@
+---
+# Write a workflow that triggers on Push to test the app, build the Docker image, and push it to a public repository in your Docker Hub account. [TAKE A SCREENSHOT 01]
+# The same workflow should trigger on a Pull Request to the main branch to test the app. [TAKE A SCREENSHOT 02]
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: user/capstone-flask-app:latest
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+  test:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run tests
+        run: docker compose run --rm test

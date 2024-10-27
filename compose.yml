@@ -1,0 +1,41 @@
+---
+name: Capstone Flask App
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+  db:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: mysqlpassword
+      MYSQL_DATABASE: capstone
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: mysqlpassword
+  web:
+    build: .
+    ports:
+      - 5000:5000
+    depends_on:
+      - redis
+      - db
+    environment:
+      REDIS_HOST: redis
+      DB_HOST: db
+      DB_USER: mysqluser
+      DB_PASSWORD: mysqlpassword
+      DB_NAME: capstone
+  test:
+    build: .
+    command: python test_app.py
+    depends_on:
+      - redis
+      - db
+    environment:
+      REDIS_HOST: redis
+      DB_HOST: db
+      DB_USER: mysqluser
+      DB_PASSWORD: mysqlpassword
+      DB_NAME: capstone
