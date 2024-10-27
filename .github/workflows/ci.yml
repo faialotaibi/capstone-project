@@ -23,13 +23,13 @@ jobs:
       - name: Run tests
         run: python test_app.py
 
-  build:
+  build-and-push-image:
     runs-on: ubuntu-latest
     needs: test
     if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v2.1.0
         with:
