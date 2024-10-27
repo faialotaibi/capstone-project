@@ -1,29 +1,37 @@
 version: '3'
 
 services:
-  app:
-    build: .
-    ports:
-      - "80:5000"
+  mysql:
+    image: mysql:8.0
     environment:
-      - MYSQL_HOST=db
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=mysecretpassword
-      - MYSQL_DB=users_db
-      - REDIS_HOST=redis
-    depends_on:
-      - db
-      - redis
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
 
   redis:
     image: redis:latest
     ports:
       - "6379:6379"
 
-  db:
-    image: mysql:latest
+  app:
+    build: ./app  # Dockerfile for Flask app should be in ./app directory
     environment:
-      MYSQL_ROOT_PASSWORD: mysecretpassword
-      MYSQL_DATABASE: users_db
+      FLASK_APP: app.py
+      MYSQL_HOST: mysql
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DB: my_database
+      REDIS_HOST: redis
     ports:
-      - "3306:3306"
+      - "5000:5000"
+    depends_on:
+      - mysql
+      - redis
+
+volumes:
+  mysql_data:
