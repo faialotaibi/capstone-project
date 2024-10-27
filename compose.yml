@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    ports:
+      - "5001:5000"
+    env_file: .env
+    depends_on:
+      - db
+      - redis
+  
+  db:
+    image: mysql
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+  
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"   
+    volumes:
+      - ./redis:/data
+
+volumes:
+  data:
+  redis:
