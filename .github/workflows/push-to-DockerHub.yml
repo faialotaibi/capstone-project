@@ -9,7 +9,7 @@ on:
   #        - main
       
 jobs:
-  docker:
+  pu:
     runs-on: ubuntu-latest
     steps:
       -
