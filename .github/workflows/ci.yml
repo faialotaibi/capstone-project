@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12-slim"
+          python-version: "3.12.7"
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -33,7 +33,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12-slim"
+          python-version: "3.12.7"
 
       - name: Install dependencies
         run: pip install -r requirements.txt
