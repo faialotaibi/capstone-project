@@ -32,9 +32,9 @@ jobs:
       - name: Docker Build & push
         uses: docker/build-push-action@v6
         with: 
+          cache-from: dunaalsulaiman/capstone-project:latest
+          cache-to: type=inline
           push: true
           tags: |
-            dunaalsulaiman/flask:latest
-            dunaalsulaiman/flask:${{ github.sha }}
-          cache-from: dunaalsulaiman/flask:latest
-          cache-to: type-inline
+            dunaalsulaiman/capstone-project:latest
+            dunaalsulaiman/capstone-project:${{ github.sha }}
