@@ -1,12 +1,12 @@
 name: push-to-DockerHub
 
 on:
-  push:
+  push: 
     branches:
       - main
-  # pull_request:
-  #   branches:
-  #        - main
+  pull_request:
+    branches:
+     - main
       
 jobs:
   test-the-code:

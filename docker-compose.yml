@@ -18,7 +18,6 @@ services:
       -  CapstoneNetwork
 
   db:
-    
     container_name: "mysql-container"
     image: mysql:latest
     ports:
@@ -32,8 +31,6 @@ services:
     restart: always
   redis:
     container_name: "redis-container"
-
-    hostname: redis
   
     image: redis:latest
     ports:
