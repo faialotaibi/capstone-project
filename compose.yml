@@ -1,0 +1,35 @@
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: mydatabase
+      MYSQL_ROOT_PASSWORD: password
+
+  redis:
+    image: redis
+    volumes:
+      - redis-data:/data
+
+  web:
+    build: .
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    environment:
+      REDIS_HOST: redis
+      DB_HOST: db
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: mydatabase
+# Names our volume
+volumes:
+  my-db:
+  redis-data:

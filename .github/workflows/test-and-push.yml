@@ -1,0 +1,17 @@
+name: test and push
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  job-1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        if: ${{ github.event_name != 'pull_request' }}
+        run: echo "hello"
