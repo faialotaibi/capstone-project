@@ -1,35 +1,49 @@
 services:
-  mysql:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: mydatabase
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+  web:
+    build: .
     ports:
-      - "3306:3306"
+      - "80:5000"
+    environment:
+      DB_USER: user
+      DB_NAME: mydatabase
+      DB_PASSWORD: password
+      DB_HOST: db
+      REDIS_HOST: redis
+    depends_on:
+      - db
+      - redis
+    networks:
+      - capstone-network
     volumes:
-      - mysql_data:/var/lib/mysql
+      - .:/app  
 
   redis:
     image: redis:latest
+    restart: always
+    networks:
+      - capstone-network
     ports:
-      - "6379:6379"
+      - "6379:6379"  
 
-  app:
-    build: .  # Use the current directory as the build context if the Dockerfile is in the project root.
+  db:
+    image: mysql:8.0
+    restart: always
     environment:
-      FLASK_APP: app.py
-      MYSQL_HOST: mysql
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: user
       MYSQL_PASSWORD: password
-      MYSQL_DB: mydatabase
-      REDIS_HOST: redis
-    ports:
-      - "5000:5000"
-    depends_on:
-      - mysql
-      - redis
+      MYSQL_DATABASE: mydatabase
+    # volumes:
+    #   - mysql_data:/var/lib/mysql
+    #   - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - capstone-network
+    expose:
+      - "3306:3306"
+
+networks:
+  capstone-network:
+    driver: bridge
 
 volumes:
   mysql_data:
