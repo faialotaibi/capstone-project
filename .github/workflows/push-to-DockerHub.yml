@@ -16,6 +16,14 @@ jobs:
       name: fetch code from repository
       uses: actions/checkout@v4
     
+    -  name: Set up Python environment
+       uses: actions/setup-python@v4
+    
+
+    - name: Install flask and other dependencies on the runner
+      run: 
+        pip install -r requirements.txt
+
     - name: Run the test command
       run: python test_app.py
 
