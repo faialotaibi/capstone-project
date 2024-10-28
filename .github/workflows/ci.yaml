@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   Docker-Build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest 
 
     steps:
     # for PR & Push
