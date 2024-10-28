@@ -35,7 +35,6 @@ jobs:
           push: true
           tags: |
             dunaalsulaiman/capstone-project:latest
-            dunaalsulaiman/capstone-project:${{ github.run_number }}
             dunaalsulaiman/capstone-project:${{ github.sha }}
-          # cache-from: dunaalsulaiman/capstone-project:latest
-          # cache-to: type-inline
+          cache-from: dunaalsulaiman/capstone-project:latest
+          cache-to: type-inline
