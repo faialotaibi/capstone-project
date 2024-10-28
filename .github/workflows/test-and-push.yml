@@ -9,8 +9,16 @@ on:
       - main
 
 jobs:
-  job-1:
-    if: ${{ github.event_name == 'pull_request' }}
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "checkout"
+        uses: actions/checkout@v4
+      - name: test the app
+        run: python test_app.py
+
+  build-and-push-image:
+    if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
     steps:
       - name: test
