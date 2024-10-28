@@ -38,3 +38,4 @@ jobs:
           tags: |
             dunaalsulaiman/capstone-project:latest
             dunaalsulaiman/capstone-project:${{ github.sha }}
+            
