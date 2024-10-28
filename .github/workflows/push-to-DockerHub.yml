@@ -9,6 +9,17 @@ on:
   #        - main
       
 jobs:
+  test-the-code:
+    runs-on: ubuntu-latest
+    steps:
+    -
+      name: fetch code from repository
+      uses: actions/checkout@v4
+    
+    -
+      name: rub the test command 
+      run: python test_app.py
+
   push-to-DockerHub:
     runs-on: ubuntu-latest
     steps:
@@ -28,8 +39,8 @@ jobs:
         with:
           push: true
 
-          tags: |
+          tags: 
               mohammedmustaf/python:latest
-              mohammedmustaf/python:${{ github.sha }}
+     
 
               
