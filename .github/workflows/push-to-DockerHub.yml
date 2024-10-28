@@ -16,8 +16,15 @@ jobs:
       name: fetch code from repository
       uses: actions/checkout@v4
     
-    -
-      name: rub the test command 
+    -  name: Set up Python environment
+       uses: actions/setup-python@v4
+    
+
+    - name: Install dependencies
+      run: 
+        pip install -r requirements.txt
+
+    - name: Run the test command
       run: python test_app.py
 
   push-to-DockerHub:
