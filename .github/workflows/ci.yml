@@ -8,6 +8,7 @@ on:
 jobs:
   build_and_push_to_docker_hub:
     runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.event.inputs.build == 'true')
     needs: 
         test
     steps:
@@ -33,7 +34,6 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    if: (github.event_name == 'pull_request' && github.event.inputs.build == 'true')
     steps:
       - uses: actions/checkout@v2
 
