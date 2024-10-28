@@ -41,8 +41,8 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: install python
-      run: |
-        sudo apt update 
-        sudo apt install -y python3 python3-pip
-        pip3 install -r requirements.txt
-        python3 test_app.py
+        run: |
+          sudo apt update 
+          sudo apt install -y python3 python3-pip
+          pip3 install -r requirements.txt
+          python3 test_app.py
