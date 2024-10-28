@@ -23,5 +23,5 @@ jobs:
         with:
           push: true
           tags: | 
-            abdullahbinahmed/c-app:latest
-            abdullahbinahmed/c-app:${{ github.sha }}
+            abdullahbinahmed/flask-app:latest
+            abdullahbinahmed/flask-app:${{ github.sha }}
