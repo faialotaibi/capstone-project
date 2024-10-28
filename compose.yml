@@ -1,0 +1,45 @@
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_DATABASE: "mydatabase"
+      MYSQL_ROOT_PASSWORD: '12345'
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    ports:
+      - '3306:3306'
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+  web:
+    build: .
+    depends_on:
+      - db
+      - redis
+    links:
+      - db
+    container_name: capstone-flask-app
+    ports:
+      - "3000:5000"
+    environment:
+      MYSQL_HOST: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_DATABASE: 'mydatabase'
+      REDIS_HOST: 'redis'
+    volumes:
+      - app:/app
+
+volumes:
+  mysql_data:
+  app:
+
+
