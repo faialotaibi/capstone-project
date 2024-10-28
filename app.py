@@ -46,7 +46,7 @@ def add_user():
         cursor.execute('INSERT INTO users (username) VALUES (%s)', (username,))
         conn.commit()
         user_id = cursor.lastrowid  # Get the ID of the inserted user
-
+    
     # Add user to Redis with user ID as the key
     r.set(user_id, username)
     
