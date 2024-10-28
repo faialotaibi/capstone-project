@@ -15,7 +15,9 @@ jobs:
       - name: "checkout"
         uses: actions/checkout@v4
       - name: test the app
-        run: python test_app.py
+        run: |
+          pip install -r requirements.txt
+          python test_app.py
 
   build-and-push-image:
     if: ${{ github.event_name != 'pull_request' }}
