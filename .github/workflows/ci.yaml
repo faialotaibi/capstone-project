@@ -17,6 +17,7 @@ jobs:
   Docker-Build:
     runs-on: ubuntu-latest 
     needs: Unit-Tests  
+    if: github.event_name == 'push'  
 
     steps:
       - name: Docker Setup
@@ -31,9 +32,9 @@ jobs:
       - name: Docker Build & push
         uses: docker/build-push-action@v6
         with: 
+          cache-from: dunaalsulaiman/capstone-project:latest
+          cache-to: type-inline
           push: true
           tags: |
             dunaalsulaiman/capstone-project:latest
             dunaalsulaiman/capstone-project:${{ github.sha }}
-          cache-from: dunaalsulaiman/capstone-project:latest
-          cache-to: type-inline
