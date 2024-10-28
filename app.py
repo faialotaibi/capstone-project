@@ -12,10 +12,10 @@ r = redis.StrictRedis(os.environ.get("REDIS_HOST"), port=6379, db=0)
 # MySQL setup
 def get_db():
     conn = mysql.connector.connect(
-        host=os.environ.get('DB_HOST', 'db'),
-        user=os.environ.get('DB_USER', 'user'),
-        password=os.environ.get('DB_PASSWORD', 'password'),
-        database=os.environ.get('DB_NAME', 'mydatabase')
+        host=os.environ.get('DB_HOST'),
+        user=os.environ.get('DB_USER'),
+        password=os.environ.get('DB_PASSWORD'),
+        database=os.environ.get('DB_NAME')
     )
     return conn
 
