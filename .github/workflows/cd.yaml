@@ -7,7 +7,13 @@ on:
 
 jobs:
   Docker-Build:
-    runs-on: ubuntu-latest 
+    runs-on: self-hosted 
+
+    strategy:
+      matrix:
+        server: 
+          - ${{ secrets.SERVER_1_HOST }}
+          - ${{ secrets.SERVER_2_HOST }}
 
     steps:
 
@@ -16,15 +22,12 @@ jobs:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-          SERVER_1_HOST: ${{ secrets.SERVER_1_HOST }}
-          SERVER_2_HOST: ${{ secrets.SERVER_2_HOST }}
         run: |
-          ssh-keyscan $SERVER_2_HOST >> ~/.ssh/known_hosts
+          ssh-keyscan ${{ matrix.server }} >> ~/.ssh/known_hosts
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/github_actions
           chmod 600 ~/.ssh/github_actions
- 
+
       - name: Pull & Deploy
         run: |
           docker pull dunaalsulaiman/capstone-project:latest
-          ssh -i ~/.ssh/github_actions $SSH_USERNAME@$SERVER_1_HOST "docker run -d -p 80:5000 dunaalsulaiman/capstone-project:latest" &&
-          ssh -i ~/.ssh/github_actions $SSH_USERNAME@$SERVER_2_HOST "docker run -d -p 80:5000 dunaalsulaiman/capstone-project:latest"
+          ssh -i ~/.ssh/github_actions $SSH_USERNAME@${{ matrix.server }} "docker run -d -p 80:5000 dunaalsulaiman/capstone-project:latest"
