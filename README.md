@@ -40,7 +40,7 @@ Notice that after visiting `/user/<user_id>` the Source shows that data came fro
 
 ### Now if I kill and re-run Redis Container the Source will show that data are fetched from MySQL:
 
-- Get Redis container id:
+- Gettt Redis container id:
 ```
 ➜  capstone git:(main) ✗ docker ps
 CONTAINER ID   IMAGE                COMMAND                  CREATED         STATUS              PORTS                               NAMES
