@@ -4,13 +4,14 @@ on:
   push:
     branches:
       - main
+  pull_request: 
+    branches:
+      - main
 
 jobs:
-  build_and_push_to_docker_hub:
+  push_docker:
     runs-on: ubuntu-latest
-    if: (github.event_name == 'push' && github.event.inputs.build == 'true')
-    needs: 
-        test
+    if: github.event_name != 'pull_request'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,15 +33,16 @@ jobs:
             abdullahbinahmed/flask-app:latest
             abdullahbinahmed/flask-app:${{ github.sha }}
 
-  test:
+  linter-checker:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v2
 
-      - name: linter-checker
+      - name: Linter Checker
         uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_PYTHON: true 
+          VALIDATE_PYTHON: true
