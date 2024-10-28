@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./app
+    container_name: flask_app
+    ports: 
+      - "5002:5000"
+    environment: 
+      - REDIS_HOST=redis
+      - DB_HOST=db
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=mydatabase 
+    depends_on:
+      - db
+      - redis
+    networks:
+      - connection
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - connection
+  redis: 
+    image: redis 
+    volumes:
+      - ./redis-data:/data 
+    networks: 
+      - web       
+
+volumes:
+  db_data:
+  redis-data:  
+
+networks:
+  connection:

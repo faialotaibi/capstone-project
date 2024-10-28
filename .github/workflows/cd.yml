@@ -1,0 +1,16 @@
+name: Test
+on:
+  pull_request:
+    branches:
+      - main 
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+         - name: Repo Checker  
+           uses: actions/checkout@v2
+         
+         - name: Test Docker
+           run: |
+              docker compose run test pytest
+      
