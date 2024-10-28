@@ -25,3 +25,15 @@ jobs:
           tags: | 
             abdullahbinahmed/flask-app:latest
             abdullahbinahmed/flask-app:${{ github.sha }}
+  linter-checker:
+      runs-on: ubuntu-latest
+      if: (github.event_name == 'pull_request' && github.event.inputs.build == 'true')
+      steps:
+        - uses: actions/checkout@v2
+        - name: linter-checker
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: true
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_PYTHON: true
