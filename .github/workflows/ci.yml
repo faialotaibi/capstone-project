@@ -10,6 +10,7 @@ on:
 
 jobs:
   push_docker:
+    needs: test
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
     steps:
@@ -33,7 +34,7 @@ jobs:
             abdullahbinahmed/flask-app:latest
             abdullahbinahmed/flask-app:${{ github.sha }}
 
-  linter-checker:
+  test:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
