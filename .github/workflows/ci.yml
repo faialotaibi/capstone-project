@@ -44,5 +44,5 @@ jobs:
         with:
           push: true
           tags: |
-            omirabbas/flask-test:latest
-            omirabbas/flask-test:${{github.sha}}
+            omirabbas/capstone-project:latest
+            omirabbas/capstone-project:${{github.sha}}
