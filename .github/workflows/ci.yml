@@ -42,4 +42,4 @@ jobs:
                 cache-from: devabdullahq/flask-app-ci:latest
       - 
         name: Run Docker Compose 
-        run: docker compose up --build 
+        run: docker compose up --build
