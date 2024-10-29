@@ -32,6 +32,6 @@ jobs:
           tags: |
             devabdullahq/flask-app-ci:latest
             devabdullahq/flask-app-ci:${{ github.sha}}
-            cache-from: devabdullahq/flask-app-ci:latest
+# cache-from: devabdullahq/flask-app-ci:latest
       - name: Run Docker Compose
         run: docker compose up -d
