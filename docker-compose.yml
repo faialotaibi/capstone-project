@@ -1,0 +1,63 @@
+services:
+
+  db:
+    image: mysql
+    networks:
+      fullstack-app:
+        aliases:
+          - db
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    volumes:
+      - mysql-db:/var/lib/mysql
+
+  web:
+    build: .
+    container_name: web
+    networks:
+      - fullstack-app
+      
+    ports:
+      - "80:5000"
+    environment:
+      - REDIS_HOST=redis
+
+    depends_on: [db, redis]
+
+  unittest:
+    build: .
+    container_name: web-unittest
+    profiles:
+      - unittest
+    command: python -m unittest
+  
+  
+  redis: 
+     image: redis
+     networks:
+      fullstack-app:
+        aliases:
+          - redis
+     container_name: redis
+     ports:
+       - 6379:6379
+     expose:
+       - 6379
+  
+  
+
+
+volumes:
+  mysql-db:
+
+networks:   
+  fullstack-app:
