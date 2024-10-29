@@ -1,0 +1,49 @@
+services:
+  web:
+    build: .
+    ports:
+      - "80:5000"
+    environment:
+      DB_USER: user
+      DB_NAME: mydatabase
+      DB_PASSWORD: password
+      DB_HOST: db
+      REDIS_HOST: redis
+    depends_on:
+      - db
+      - redis
+    networks:
+      - capstone-network
+    volumes:
+      - .:/app  
+
+  redis:
+    image: redis:latest
+    restart: always
+    networks:
+      - capstone-network
+    ports:
+      - "6379:6379"  
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: mydatabase
+    # volumes:
+    #   - mysql_data:/var/lib/mysql
+    #   - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - capstone-network
+    expose:
+      - "3306:3306"
+
+networks:
+  capstone-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
