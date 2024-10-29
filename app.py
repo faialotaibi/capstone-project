@@ -69,7 +69,7 @@ def user_info(user_id):
     if user:
         return render_template('user.html', user_id=user[0], name=user[1], source='MySQL')
     else:
-        return "User not found", 404
+        return "User not found never  dsdas", 404
 
 if __name__ == '__main__':
     init_db()  # Make sure table exists
