@@ -7,6 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - 
+        name: Checkout
+        uses: actions/checkout@v4
+      - 
         name: Web Unit tests
         run: docker compose run unittest
     
@@ -34,9 +37,9 @@ jobs:
         with:
             push: true
             tags: |
-                devabdullahq/flask-docker-ci:latest
-                devabdullahq/flask-docker-ci:${{ github.sha}}
-                cache-from: devabdullahq/flask-docker-ci:latest
+                devabdullahq/flask-app:latest
+                devabdullahq/flask-app:${{ github.sha}}
+                cache-from: devabdullahq/flask-app:latest
       - 
         name: Run Docker Compose 
         run: docker compose up --build 
