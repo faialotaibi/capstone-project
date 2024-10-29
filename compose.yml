@@ -8,7 +8,8 @@ services:
       MYSQL_PASSWORD: password
       MYSQL_DATABASE: mydatabase
       MYSQL_ROOT_PASSWORD: password
-
+    volumes:
+      - my-db:/var/lib/mysql
   redis:
     image: redis
     volumes:
