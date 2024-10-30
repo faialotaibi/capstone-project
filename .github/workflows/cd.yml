@@ -10,7 +10,7 @@ jobs:
     runs-on: self-hosted
     strategy:
       matrix:
-        server: ["10.0.2.102", "10.0.2.101"]  # Using IP addresses directly
+        server: ["10.0.2.201", "10.0.2.200"]  # Using IP addresses directly
 
     steps:
     - name: Checkout code
