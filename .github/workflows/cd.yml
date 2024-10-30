@@ -16,7 +16,7 @@ jobs:
           # ssh-keyscan ${{ matrix.nodes }} >> ~/.ssh/known_hosts
           # echo "$SSH_PRIVATE_KEY" > ~/.ssh/github_actions
           # chmod 600 ~/.ssh/github_actions
-          ssh -i ~/.ssh/github_actions $SSH_USERNAME@${{ matrix.nodes }} " git pull sarakalhussain/devops && docker stop web_app && docker rm web_app && docker run -d \
+          ssh -i ~/.ssh/github_actions $SSH_USERNAME@${{ matrix.nodes }} "docker pull sarakalhussain/devops && docker stop web_app && docker rm web_app && docker run -d \
           -p 5000:5000 \
           --name web_app \
           -e REDIS_HOST="${redis_host}" \ 
