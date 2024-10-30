@@ -1,21 +1,61 @@
+# name: Build and Run Go Program
+# on: [push]
+# jobs:
+#   build:
+#     runs-on: self-hosted
+#     strategy:
+#       matrix:
+#         nodes: ["10.0.2.154", "10.0.2.155"]
+
+#     steps:
+#       - name: Deploy to {{ matrix.nodes }}
+#         env:
+#           SSH_PRIVATE_KEY: {{ secrets.SSH_PRIVATE_KEY }}
+#           SSH_USERNAME: {{ secrets.SSH_USERNAME }}
+#         run: |
+#           # ssh-keyscan {{ matrix.nodes }} >> ~/.ssh/known_hosts
+#           # echo "$SSH_PRIVATE_KEY" > ~/.ssh/github_actions
+#           # chmod 600 ~/.ssh/github_actions
+#           ssh -i ~/.ssh/github_actions $SSH_USERNAME@{{ matrix.nodes }} "git pull sarakalhussain/devops:latest && docker stop web_app && docker rm web_app && docker run -d \
+#           -p 5000:5000 \
+#           --name web_app \
+#           -e REDIS_HOST="${redis_host}" \ 
+#           -e DB_HOST="${db_host}" \
+#           -e DB_USER="user" \
+#           -e DB_PASSWORD="password" \
+#           -e DB_NAME="mydatabase" \
+#           sarakalhussain/devops:latest"
+
+
 name: Build and Run Go Program
-on: [push]
+
+on: 
+  push:
+    branches:
+      - main
+
 jobs:
-  build:
+  deploy:
     runs-on: self-hosted
     strategy:
       matrix:
-        nodes: ["10.0.2.154", "10.0.2.155"]
+        node: ["10.0.2.154", "10.0.2.155"]
 
     steps:
-      - name: Deploy to ${{ matrix.nodes }}
+      - name: Setup SSH Key and Known Hosts
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
-          # ssh-keyscan ${{ matrix.nodes }} >> ~/.ssh/known_hosts
-          # echo "$SSH_PRIVATE_KEY" > ~/.ssh/github_actions
-          # chmod 600 ~/.ssh/github_actions
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/github_actions
+          chmod 600 ~/.ssh/github_actions
+          ssh-keyscan -H ${{ matrix.node }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to ${{ matrix.node }}
+        env:
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          REDIS_HOST: "10.0.2.152"  # Replace with actual Redis IP or pass as a secret
+          DB_HOST: "10.0.2.153"        # Replace with actual DB IP or pass as a secret
+        run: |
           ssh -i ~/.ssh/github_actions $SSH_USERNAME@${{ matrix.node }} << EOF
             docker pull sarakalhussain/devops:latest
             docker stop web_app || true
@@ -30,3 +70,6 @@ jobs:
               -e DB_NAME="mydatabase" \
               sarakalhussain/devops:latest
           EOF
+
+
+          
