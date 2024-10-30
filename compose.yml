@@ -3,13 +3,13 @@ services:
     image: mysql
     restart: always
     environment:
-      MYSQL_HOST: db
       MYSQL_USER: user
       MYSQL_PASSWORD: password
       MYSQL_DATABASE: mydatabase
       MYSQL_ROOT_PASSWORD: password
     volumes:
       - my-db:/var/lib/mysql
+
   redis:
     image: redis
     volumes:
@@ -26,10 +26,6 @@ services:
       - .:/app
     environment:
       REDIS_HOST: redis
-      DB_HOST: db
-      DB_USER: user
-      DB_PASSWORD: password
-      DB_NAME: mydatabase
 # Names our volume
 volumes:
   my-db:
