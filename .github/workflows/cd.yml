@@ -1,0 +1,37 @@
+name: Deploy to HTTP Servers
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        server: ["10.0.2.102", "10.0.2.101"]  # Using IP addresses directly
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Log in to Docker Hub
+      run: docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin <<< "${{ secrets.DOCKERHUB_PASSWORD }}"
+
+    - name: Pull Docker image
+      run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask:latest
+
+    - name: Deploy Docker container
+      run: |
+        ssh user@${{ matrix.server }} <<'EOF'
+          docker run -d \
+            --name app \
+            -p 80:5000 \
+            -e REDIS_HOST=redis \
+            -e DB_NAME=mydatabase \
+            -e DB_PASSWORD=password \
+            -e DB_USER=user \
+            -e DB_HOST=db \
+            ${{ secrets.DOCKERHUB_USERNAME }}/flask:latest
+        EOF
