@@ -49,6 +49,6 @@ jobs:
            with:
              push: true
              tags: |
-                sarakalhussain/action-test:latest
+                sarakalhussain/devops:latest
                 sarakalhussain/action-test:${{github.sha}}
 
