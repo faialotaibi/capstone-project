@@ -5,7 +5,7 @@ services:
     build: ./app
     container_name: flask_app
     ports: 
-      - "5002:5000"
+      - "80:5000"
     environment: 
       - REDIS_HOST=redis
       - DB_HOST=db
