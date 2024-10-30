@@ -34,4 +34,4 @@ jobs:
 
     - name: Deploy Docker container
       run: |
-        ssh -i key.pem root@${{ matrix.server.ip }} 'cd /capstone-project && docker stop app && docker rm app && docker pull ${{ secrets.DOCKER_USERNAME }}/flask:latest && docker run -d --name app -p 80:5000 --env-file .env ${{ secrets.DOCKER_USERNAME }}/flask:latest'
+        ssh -i key.pem root@${{ matrix.server.ip }} 'cd /capstone-project && docker stop app && docker rm app && docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask:latest && docker run -d --name app -p 80:5000 --env-file .env ${{ secrets.DOCKERHUB_USERNAME }}/flask:latest'
