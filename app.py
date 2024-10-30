@@ -22,14 +22,18 @@ def get_db():
 # Create users table if not exists
 def init_db():
     time.sleep(15)  # Wait for DB to be ready
+    print("creating db")
     with get_db() as conn:
+        print("connecting db")
         cursor = conn.cursor()
+        print("executing db")
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 username VARCHAR(255) NOT NULL
             )
         ''')
+        print("committing db")
         conn.commit()
 
 @app.route('/')
@@ -73,4 +77,5 @@ def user_info(user_id):
 
 if __name__ == '__main__':
     init_db()  # Make sure table exists
+    print("created db")
     app.run(host='0.0.0.0', port=5000, debug=True)

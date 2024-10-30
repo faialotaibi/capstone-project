@@ -1,0 +1,37 @@
+name: Deploy to HTTP Servers
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        server: 
+            - { name: "deploy", ip: "10.0.2.201" , user: "root" }
+            - { name: "deploy", ip: "10.0.2.200" , user: "root" }
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+    - name: Pull Docker image
+      run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask:latest
+    
+    - name: Copy key file
+      env: 
+        SSH_KEY: ${{secrets.SSH_BASTION}}
+      run: | 
+        echo "$SSH_KEY" > key.pem
+        chmod 600 key.pem
+
+
+    - name: Deploy Docker container
+      run: |
+        ssh -i key.pem root@${{ matrix.server.ip }} 'cd /capstone-project && docker stop app && docker rm app && docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask:latest && docker run -d --name app -p 80:5000 --env-file .env ${{ secrets.DOCKERHUB_USERNAME }}/flask:latest'
