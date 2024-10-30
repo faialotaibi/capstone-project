@@ -10,35 +10,28 @@ jobs:
     runs-on: self-hosted
     strategy:
       matrix:
-        server: ["10.0.2.201", "10.0.2.200"]  # Using IP addresses directly
+        server: 
+            - { name: "deploy", ip: "10.0.2.201" , user: "root" }
+            - { name: "deploy", ip: "10.0.2.200" , user: "root" }
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Log in to Docker Hub
-      run: docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin <<< "${{ secrets.DOCKERHUB_PASSWORD }}"
+      run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
     - name: Pull Docker image
       run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask:latest
+    
+    - name: Copy key file
+      env: 
+        SSH_KEY: ${{secrets.SSH_BASTION}}
+      run: | 
+        echo "$SSH_KEY" > key.pem
+        chmod 600 key.pem
+
 
     - name: Deploy Docker container
-      env:
-        SSH_BASTION_KEY: ${{ secrets.SSH_BASTION }}
       run: |
-        # Save the SSH bastion key to a file and set appropriate permissions
-        echo "$SSH_BASTION_KEY" > bastion_key.pem
-        chmod 600 bastion_key.pem
-        
-        # Use SSH to connect through the bastion host
-        ssh -o ProxyCommand="ssh -i bastion_key.pem -W %h:%p user@bastion_ip_address" user@${{ matrix.server }} <<'EOF'
-          docker run -d \
-            --name app \
-            -p 80:5000 \
-            -e REDIS_HOST=redis \
-            -e DB_NAME=mydatabase \
-            -e DB_PASSWORD=password \
-            -e DB_USER=user \
-            -e DB_HOST=db \
-            ${{ secrets.DOCKERHUB_USERNAME }}/flask:latest
-        EOF
+        ssh -i key.pem root@${{ matrix.server.ip }} 'cd /capstone-project && docker stop app && docker rm app && docker pull ${{ secrets.DOCKER_USERNAME }}/flask:latest && docker run -d --name app -p 80:5000 --env-file .env ${{ secrets.DOCKER_USERNAME }}/flask:latest'
