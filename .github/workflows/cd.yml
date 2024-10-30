@@ -23,8 +23,15 @@ jobs:
       run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask:latest
 
     - name: Deploy Docker container
+      env:
+        SSH_BASTION_KEY: ${{ secrets.SSH_BASTION }}
       run: |
-        ssh user@${{ matrix.server }} <<'EOF'
+        # Save the SSH bastion key to a file and set appropriate permissions
+        echo "$SSH_BASTION_KEY" > bastion_key.pem
+        chmod 600 bastion_key.pem
+        
+        # Use SSH to connect through the bastion host
+        ssh -o ProxyCommand="ssh -i bastion_key.pem -W %h:%p user@bastion_ip_address" user@${{ matrix.server }} <<'EOF'
           docker run -d \
             --name app \
             -p 80:5000 \
