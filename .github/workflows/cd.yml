@@ -28,7 +28,7 @@ jobs:
           && docker run -d -p 5000:5000 -e "REDIS_HOST=${REDIS_HOST}" -e "DB_HOST=${DB_HOST}" --name web_app osarakalhussain/devops:latest"
 
 
-
+#  ----------------------------------Another Way ----------------------------------
 # name: Build and Run python Program
 
 # on: 
