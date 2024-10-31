@@ -17,6 +17,11 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
         run: |
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
@@ -28,11 +33,10 @@ jobs:
             docker run -d \
               -p 5000:5000 \
               --name web_app \
-              -e REDIS_HOST=redis \
-              -e DB_HOST=db \
-              -e DB_USER=user \
-              -e DB_PASSWORD=password \
-              -e DB_NAME=mydatabase \
+              -e REDIS_HOST=${REDIS_HOST} \
+              -e DB_HOST=${DB_HOST} \
+              -e DB_USER=${DB_USER} \
+              -e DB_PASSWORD=${DB_PASSWORD} \
+              -e DB_NAME=${DB_NAME} \
               sarakalhussain/devops:latest
           "
-
