@@ -1,31 +1,31 @@
-name: Build and Run python Program
+# name: Build and Run python Program
 
-on: 
-  push:
-    branches:
-      - main
+# on: 
+#   push:
+#     branches:
+#       - main
 
-jobs:
-  deploy:
-    runs-on: self-hosted
-    strategy:
-      matrix:
-        nodes: ["10.0.2.154", "10.0.2.155"]
+# jobs:
+#   deploy:
+#     runs-on: self-hosted
+#     strategy:
+#       matrix:
+#         nodes: ["10.0.2.154", "10.0.2.155"]
 
-    steps:  
-      - name: Deploy to {{ matrix.node }}
-        env:
-          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REDIS_HOST: "10.0.2.152" 
-          DB_HOST: "10.0.2.153"  
-        run: |
-          ssh-keyscan ${{ matrix.nodes }} >> ~/.ssh/known_hosts
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/github_actions
-          chmod 600 ~/.ssh/github_actions
-          ssh -i ~/.ssh/github_actions $SSH_USERNAME@{{ matrix.nodes }} "docker kill web_app && docker rm web_app
-          && docker pull sarakalhussain/devops:latest
-          && docker run -d -p 5000:5000 -e "REDIS_HOST=${REDIS_HOST}" -e "DB_HOST=${DB_HOST}" --name web_app osarakalhussain/devops:latest"
+#     steps:  
+#       - name: Deploy to {{ matrix.node }}
+#         env:
+#           SSH_USERNAME: {{ secrets.SSH_USERNAME }}
+#           SSH_PRIVATE_KEY: {{ secrets.SSH_PRIVATE_KEY }}
+#           REDIS_HOST: "10.0.2.152" 
+#           DB_HOST: "10.0.2.153"  
+#         run: |
+#           ssh-keyscan {{ matrix.nodes }} >> ~/.ssh/known_hosts
+#           echo "$SSH_PRIVATE_KEY" > ~/.ssh/github_actions
+#           chmod 600 ~/.ssh/github_actions
+#           ssh -i ~/.ssh/github_actions $SSH_USERNAME@{{ matrix.nodes }} "docker kill web_app && docker rm web_app
+#           && docker pull sarakalhussain/devops:latest
+#           && docker run -d -p 5000:5000 -e "REDIS_HOST=${REDIS_HOST}" -e "DB_HOST=${DB_HOST}" --name web_app osarakalhussain/devops:latest"
 
 
 #  ----------------------------------Another Way ----------------------------------
@@ -72,3 +72,44 @@ jobs:
 #               -e DB_NAME="mydatabase" \
 #               sarakalhussain/devops:latest
 #           EOF
+
+
+
+
+name: Deploy Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        nodes: ["10.0.2.154", "10.0.2.155"]
+
+    steps:
+      - name: Deploy to ${{ matrix.nodes }}
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ matrix.nodes }} >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_rsa $SSH_USERNAME@${{ matrix.nodes }} "
+            docker pull sarakalhussain/devops:latest && \
+            docker stop web_app || true && \
+            docker rm web_app || true && \
+            docker run -d \
+              -p 5000:5000 \
+              --name web_app \
+              -e REDIS_HOST=redis \
+              -e DB_HOST=db \
+              -e DB_USER=user \
+              -e DB_PASSWORD=password \
+              -e DB_NAME=mydatabase \
+              sarakalhussain/devops:latest
+          "
